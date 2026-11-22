@@ -243,3 +243,16 @@ input[type=range] { padding: 0; accent-color: var(--cobalt); }
 .bracket-loader { display: flex; flex-direction: column; align-items: center; } .bl { stroke: var(--cobalt); stroke-width: 3; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 2.4s ease-in-out infinite; } .bl4,.bl5,.bl6 { stroke: var(--orange); } .bl2,.bl5 { animation-delay: .3s; } .bl3,.bl6 { animation-delay: .6s; } .bl-ball { fill: var(--orange); animation: ball 2.4s ease-in-out infinite; transform-origin: 60px 36px; } @keyframes draw { 0% { stroke-dashoffset: 100; } 45%, 75% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -100; } } @keyframes ball { 50% { transform: scale(1.6); } }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } html { scroll-behavior: auto; } }
+
+/* ---- demo mode + demo video ---- */
+.demo-bar { background: var(--orange); color: #1b0b00; font-size: .88rem; position: relative; z-index: 60; }
+.demo-bar-in { max-width: 1180px; margin: 0 auto; padding: 7px 20px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.linklike { background: none; border: 0; padding: 0; margin-left: 14px; font: inherit; font-weight: 700; color: inherit; text-decoration: underline; cursor: pointer; }
+.demo-grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: 28px; align-items: start; }
+@media (max-width: 900px) { .demo-grid { grid-template-columns: 1fr; } }
+.chapters { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.chapters button { display: flex; gap: 12px; width: 100%; align-items: center; text-align: left; background: #fff; border: 1px solid var(--line, #e1e4f3); border-radius: 14px; padding: 11px 14px; font: 600 .92rem var(--font); cursor: pointer; color: var(--ink); }
+.chapters button:hover, .chapters .on button { border-color: var(--cobalt); }
+.chapters .on button { background: #eef0ff; }
+.chapters time { font: 600 .8rem var(--mono); color: var(--cobalt); background: #eef0ff; border-radius: 8px; padding: 3px 7px; }
+.video-box.buffering::after { content: "Loading the video so you can jump anywhere…"; position: absolute; left: 0; right: 0; bottom: 56px; text-align: center; color: #fff; font: 600 .85rem var(--font); text-shadow: 0 1px 8px rgba(0,0,0,.7); pointer-events: none; }

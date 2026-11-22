@@ -1,3 +1,4 @@
+import { setDemo } from "../lib/demo/flag.js";
 import { useEffect, useRef, useState } from "react";
 import { useWallet } from "../lib/wallet.jsx";
 import { shortAddr } from "../lib/format.js";
@@ -91,7 +92,8 @@ export function ConnectModal() {
           )}
           {w.providers.length === 0 && w.scanned && (
             <Notice tone="warn" title="No wallet found">
-              Install a browser wallet such as <a href="https://metamask.io/download/" target="_blank" rel="noreferrer">MetaMask</a>, then reload this page. Without a wallet you can still browse every round (read-only).
+              Install a browser wallet such as <a href="https://metamask.io/download/" target="_blank" rel="noreferrer">MetaMask</a>, then reload this page. Without a wallet you can still browse every round (read-only).{" "}
+              <button type="button" className="linklike" style={{ marginLeft: 0 }} onClick={() => { setDemo(true); location.reload(); }}>Or look around in demo mode</button>
             </Notice>
           )}
         </div>

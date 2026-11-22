@@ -4,6 +4,7 @@ import { CONTRACT_ADDRESS, EXPLORER_URL } from "../config.js";
 import { invalidateAll } from "./chain.js";
 import { outcome, waitDecided } from "./receipt.js";
 import { useWallet } from "./wallet.jsx";
+import { isDemo, loadMock } from "./demo/flag.js";
 import { JudgeSpinner, Spinner } from "../components/Spinners.jsx";
 
 const Ctx = createContext(null);
@@ -34,6 +35,24 @@ export function TxProvider({ children }) {
       if (!wallet.ready) {
         patch(id, { phase: "failed", error: "Switch your wallet to GenLayer Studionet first." });
         return { ok: false, error: "Wrong network." };
+      }
+      if (isDemo()) {
+        try {
+          const mock = await loadMock();
+          const res = await mock.send({
+            fn: spec.fn, args: spec.args ?? [], value: spec.value ?? 0n, from: wallet.account,
+            onStage: (stage, info) => { if (stage === "sent") patch(id, { phase: "pending", hash: info?.hash }); },
+          });
+          invalidateAll();
+          const out = { ok: res.ok, known: true, undetermined: false, reason: res.detail };
+          if (res.ok) patch(id, { phase: "done", out });
+          else patch(id, { phase: "failed", out, error: res.detail || "The contract refused this call. Nothing changed." });
+          return { ok: res.ok, hash: res.hash, out };
+        } catch (e) {
+          const msg = String(e?.message || e).slice(0, 240);
+          patch(id, { phase: "failed", error: msg });
+          return { ok: false, error: msg };
+        }
       }
       let hash;
       try {
@@ -82,7 +101,7 @@ export function TxProvider({ children }) {
               {t.phase === "failed" && t.value > 0n && t.out?.known && !t.out?.undetermined && (
                 <span className="toast-hint warn">On Studionet the GEN attached to a refused payable call stays in the contract. That is why this app checks every input first.</span>
               )}
-              {t.hash && (
+              {t.hash && !isDemo() && (
                 <a href={`${EXPLORER_URL}/transactions/${t.hash}`} target="_blank" rel="noreferrer">
                   View transaction ↗
                 </a>

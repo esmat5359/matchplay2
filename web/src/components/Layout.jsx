@@ -5,6 +5,7 @@ import { onRateLimit, rateLimitedUntil } from "../lib/chain.js";
 import { Wordmark } from "./Logo.jsx";
 import { ConnectButton, ConnectModal, NetworkBanner } from "./WalletUI.jsx";
 import { shortAddr } from "../lib/format.js";
+import { isDemo, setDemo, loadMock } from "../lib/demo/flag.js";
 
 const NAV = [
   ["/", "Home", true],
@@ -15,6 +16,31 @@ const NAV = [
   ["/docs", "Docs"],
   ["/demo", "Demo"],
 ];
+
+function DemoBar() {
+  if (!isDemo()) return null;
+  const reset = async () => {
+    (await loadMock()).resetDemo();
+    location.reload();
+  };
+  const exit = () => {
+    setDemo(false);
+    location.reload();
+  };
+  return (
+    <div className="demo-bar">
+      <div className="demo-bar-in">
+        <span>
+          <b>Demo mode</b> · simulated network and wallet, no real GEN, nothing is sent to Studionet.
+        </span>
+        <span>
+          <button className="linklike" onClick={reset}>Reset demo data</button>
+          <button className="linklike" onClick={exit}>Exit demo</button>
+        </span>
+      </div>
+    </div>
+  );
+}
 
 function RateLimitBar() {
   const [until, setUntil] = useState(rateLimitedUntil());
@@ -39,6 +65,7 @@ export default function Layout({ children }) {
   }, [loc.pathname]);
   return (
     <div className="shell">
+      <DemoBar />
       <div className="bg-deco" aria-hidden="true">
         <i className="blob b1" />
         <i className="blob b2" />

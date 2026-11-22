@@ -1,6 +1,7 @@
 import { createClient } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
 import { CONTRACT_ADDRESS } from "../config.js";
+import { isDemo, loadMock } from "./demo/flag.js";
 
 export { studionet };
 export const readClient = createClient({ chain: studionet });
@@ -59,6 +60,10 @@ export function readView(fn, args = [], { ttl = 6000, force = false } = {}) {
   if (Date.now() < blockedUntil) return Promise.reject(Object.assign(new Error("Rate limited by the Studionet node. Retrying shortly."), { rateLimited: true }));
   const promise = (async () => {
     try {
+      if (isDemo()) {
+        const a = args.map((x) => (typeof x === "string" && /^\d+$/.test(x) ? Number(x) : x));
+        return await (await loadMock()).read(fn, a);
+      }
       const raw = await readClient.readContract({ address: CONTRACT_ADDRESS, functionName: fn, args });
       return parse(raw);
     } catch (e) {
@@ -91,6 +96,7 @@ export const api = {
 
 // ---- the contract's own balance (for the ledger page) --------------------------------------------------------------------
 export async function nativeBalance() {
+  if (isDemo()) return BigInt((await (await loadMock()).read("solvency", [])).native ?? 0);
   const hex = await readClient.request({ method: "eth_getBalance", params: [CONTRACT_ADDRESS, "latest"] });
   return BigInt(hex);
 }

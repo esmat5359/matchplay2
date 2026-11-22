@@ -29,6 +29,19 @@ Drop your demo video at `public/demo/matchplay-demo.mp4` (or set `VITE_DEMO_VIDE
 | `#/docs` | Full documentation (lifecycle, rules, money, wallet, Studionet quirks, interface, errors, FAQ) |
 | `#/demo` | Click-to-play demo video |
 
+## Demo mode
+
+Open the site with `?demo=1` (for example `https://your-site/?demo=1`), or press *Or look around in demo mode* in the wallet dialog,
+or *Try demo mode yourself* on the Demo page. The app then talks to an in-browser copy of the contract rules
+(`src/lib/demo/`) and a pretend EIP-6963 wallet that starts on the wrong network, so the real connect and switch flow can be tried.
+Nothing is sent anywhere and no GEN is needed. The orange bar has *Reset demo data* and *Exit demo*. The engine is only downloaded in demo mode.
+
+## Demo video
+
+`public/demo/matchplay-demo.mp4` + `poster.jpg` are included. The video has a keyframe every ~2.4 s and its index at the front,
+and `src/lib/seek.js` makes chapter jumps and the progress bar work even on a host that does not serve byte ranges
+(it falls back to playing an in-memory copy).
+
 ## Wallet (EIP-6963)
 
 `src/lib/wallet.jsx` discovers wallets with `eip6963:requestProvider` / `eip6963:announceProvider`
