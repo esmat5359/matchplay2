@@ -43,7 +43,7 @@ export default function Demo() {
   const jump = (t) => {
     setStarted(true);
     if (yt) setYtStart(t);
-    else seekTo(video.current, t);
+    else seekTo(video.current, t, { card: box.current });
   };
   const tryDemo = () => {
     setDemo(true);
